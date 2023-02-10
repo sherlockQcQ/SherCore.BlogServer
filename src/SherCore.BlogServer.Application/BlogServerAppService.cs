@@ -8,6 +8,7 @@ namespace SherCore.BlogServer;
 
 /* Inherit your application services from this class.
  */
+
 public abstract class BlogServerAppService : ApplicationService
 {
     protected BlogServerAppService()
