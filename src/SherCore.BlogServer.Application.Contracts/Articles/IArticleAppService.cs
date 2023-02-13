@@ -5,12 +5,12 @@ using Volo.Abp.Application.Services;
 
 namespace SherCore.BlogServer.Articles
 {
-    public interface IArticleAppService:ICrudAppService< //Defines CRUD methods
+    public interface IArticleAppService : ICrudAppService< //Defines CRUD methods
             ArticleDto, //Used to show Entity
             Guid, //Primary key of the  entity
             ArticleRequestDto, //Used for paging/sorting
-            ArticleCreateOrUpdateDto> //Used to create/update a entity
+            ArticleCreateDto,
+            ArticleUpdateDto> //Used to create/update a entity
     {
-
     }
 }

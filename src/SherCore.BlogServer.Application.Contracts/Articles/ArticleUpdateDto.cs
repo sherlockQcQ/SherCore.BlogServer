@@ -6,11 +6,10 @@ using System.Text;
 namespace SherCore.BlogServer.Articles
 {
     /// <summary>
-    /// Dto -文章创建或更新
+    /// Dto -文章更新
     /// </summary>
-    public class ArticleCreateOrUpdateDto
+    public class ArticleUpdateDto
     {
-
         /// <summary>
         /// 标题
         /// </summary>
