@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SherCore.BlogServer.Articles;
+using SherCore.BlogServer.Categorys;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -24,6 +27,8 @@ public class BlogServerDbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Category> Categorys { get; set; }
 
     #region Entities from the modules
 
@@ -81,5 +86,20 @@ public class BlogServerDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+
+        builder.Entity<Article>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Article",
+                BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+        });
+
+        builder.Entity<Category>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Category",
+                BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+        });
     }
 }

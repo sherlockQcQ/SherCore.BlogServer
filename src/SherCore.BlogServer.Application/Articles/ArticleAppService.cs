@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 
 namespace SherCore.BlogServer.Articles
 {
+    /*[Authorize()]*/
+    [RemoteService(IsEnabled = false)]
     public class ArticleAppService : BlogServerAppService, IArticleAppService
     {
         private readonly IRepository<Article, Guid> _articleReository;

@@ -1,12 +1,11 @@
 ﻿using System;
-using Volo.Abp.Domain.Entities.Auditing;
+using System.Collections.Generic;
+using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace SherCore.BlogServer.Categorys
 {
-    /// <summary>
-    /// 分类表
-    /// </summary>
-    public class Category : FullAuditedAggregateRoot<Guid>
+    public class CategoryCreateDto:EntityDto<Guid>
     {
         /// <summary>
         /// 名称
@@ -21,6 +20,6 @@ namespace SherCore.BlogServer.Categorys
         /// <summary>
         /// 父节点
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public Guid ParentId { get; set; }
     }
 }
