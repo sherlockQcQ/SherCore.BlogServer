@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace SherCore.BlogServer.Articles
 {
-    /*[Authorize()]*/
+    [Authorize()]
     [RemoteService(IsEnabled = false)]
     public class ArticleAppService : BlogServerAppService, IArticleAppService
     {
