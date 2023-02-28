@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Volo.Abp.Application.Dtos;
 
 namespace SherCore.BlogServer.Categorys
 {
-    public class CategoryCreateDto:EntityDto<Guid>
+    public class CategoryCreateDto : EntityDto<Guid>
     {
         /// <summary>
         /// 名称
@@ -21,5 +19,10 @@ namespace SherCore.BlogServer.Categorys
         /// 父节点
         /// </summary>
         public Guid ParentId { get; set; }
+
+        /// <summary>
+        /// 分类下文章总数
+        /// </summary>
+        public int ArticleCount { get; set; }
     }
 }
