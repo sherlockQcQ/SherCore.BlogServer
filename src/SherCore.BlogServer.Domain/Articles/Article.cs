@@ -39,9 +39,9 @@ namespace SherCore.BlogServer.Articles
         public int ThumbUp { get; set; }
 
         /// <summary>
-        /// 状态
+        /// 状态  -1、公开 -2、私密 -3、草稿
         /// </summary>
-        public int Status { get; set; }
+        public ArticleStatus Status { get; set; }
 
         /// <summary>
         /// 是否置顶

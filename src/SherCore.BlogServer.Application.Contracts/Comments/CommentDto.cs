@@ -6,9 +6,12 @@ using Volo.Abp.Auditing;
 
 namespace SherCore.BlogServer.Comments
 {
+    /// <summary>
+    ///  评论Dto
+    /// </summary>
     public class CommentDto : EntityDto<Guid>
     {
-        /// <summary>
+         /// <summary>
         /// 文章Id
         /// </summary>
         public Guid ArticleId { get; set; }
@@ -58,5 +61,20 @@ namespace SherCore.BlogServer.Comments
         ///  用户名
         /// </summary>
         public string UserName { get; set; }
+
+        /// <summary>
+        ///  用户头像
+        /// </summary>
+        public string Avtior { get; set; }
+
+        /// <summary>
+        ///  楼层？序号？
+        /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
+        ///  索引展示
+        /// </summary>
+        public string IndexStr  => "#" + Index;
     }
 }

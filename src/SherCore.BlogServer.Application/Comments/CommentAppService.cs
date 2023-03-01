@@ -21,6 +21,7 @@ namespace SherCore.BlogServer.Comments
         public Task<CommentDto> CreateAsync(CommentCreateDto input)
         {
             var entity = ObjectMapper.Map<CommentCreateDto, Comment>(input);
+            // 处理 IP地址等信息
 
             throw new NotImplementedException();
         }

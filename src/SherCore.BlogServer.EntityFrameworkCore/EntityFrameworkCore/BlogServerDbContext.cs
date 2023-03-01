@@ -27,8 +27,6 @@ public class BlogServerDbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-    public DbSet<Article> Articles { get; set; }
-    public DbSet<Category> Categorys { get; set; }
 
     #region Entities from the modules
 
@@ -45,6 +43,7 @@ public class BlogServerDbContext :
 
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
+
     public DbSet<IdentityRole> Roles { get; set; }
     public DbSet<IdentityClaimType> ClaimTypes { get; set; }
     public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
@@ -53,14 +52,17 @@ public class BlogServerDbContext :
 
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
+
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
-    #endregion
+    #endregion Entities from the modules
+
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Category> Categorys { get; set; }
 
     public BlogServerDbContext(DbContextOptions<BlogServerDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -87,17 +89,16 @@ public class BlogServerDbContext :
         //    //...
         //});
 
-
         builder.Entity<Article>(b =>
         {
-            b.ToTable(BlogServerConsts.DbTablePrefix + "Article",
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Articles",
                 BlogServerConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
         });
 
         builder.Entity<Category>(b =>
         {
-            b.ToTable(BlogServerConsts.DbTablePrefix + "Category",
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Categorys",
                 BlogServerConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
         });

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SherCore.BlogServer.Comments
@@ -48,5 +44,10 @@ namespace SherCore.BlogServer.Comments
         /// 反对数
         /// </summary>
         public int Oppse { get; set; }
+
+        /// <summary>
+        ///  楼层？序号？
+        /// </summary>
+        public int Index { get; set; }
     }
 }
