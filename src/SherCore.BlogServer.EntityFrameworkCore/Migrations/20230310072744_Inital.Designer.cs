@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace SherCore.BlogServer.Migrations
 {
     [DbContext(typeof(BlogServerDbContext))]
-    [Migration("20230309154559_Initial")]
-    partial class Initial
+    [Migration("20230310072744_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
