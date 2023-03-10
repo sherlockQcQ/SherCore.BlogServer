@@ -184,19 +184,19 @@ public class AdminHttpApiHostModule : AbpModule
         {
             options.AddDefaultPolicy(builder =>
                {
-                builder
-                    .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
-                    .WithAbpExposedHeaders()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
+                   builder
+                       .WithOrigins(
+                           configuration["App:CorsOrigins"]
+                               .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                               .Select(o => o.RemovePostFix("/"))
+                               .ToArray()
+                       )
+                       .WithAbpExposedHeaders()
+                       .SetIsOriginAllowedToAllowWildcardSubdomains()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .AllowCredentials();
+               });
         });
     }
 
