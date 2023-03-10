@@ -263,6 +263,8 @@ src/SherCore.BlogServer.Blazor.Server.Tiered/Logs/*
 
 # BlogServer.Admin
 src/SherCore.BlogServer.Admin.Web/Logs/*
+src/SherCore.BlogServer.Admin.Web.Host/Logs/*
+src/SherCore.BlogServer.Admin.AuthServer/Logs/*
 src/SherCore.BlogServer.Admin.HttpApi.Host/Logs/*
 src/SherCore.BlogServer.Admin.HttpApi.Host/Logs/*
 
