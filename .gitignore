@@ -261,5 +261,10 @@ src/SherCore.BlogServer.DbMigrator/Logs/*
 src/SherCore.BlogServer.Blazor.Server/Logs/*
 src/SherCore.BlogServer.Blazor.Server.Tiered/Logs/*
 
+# BlogServer.Admin
+src/SherCore.BlogServer.Admin.Web/Logs/*
+src/SherCore.BlogServer.Admin.HttpApi.Host/Logs/*
+src/SherCore.BlogServer.Admin.HttpApi.Host/Logs/*
+
 # Use abp install-libs to restore.
 **/wwwroot/libs/*

@@ -50,7 +50,7 @@ public class AdminHttpApiHostModule : AbpModule
         {
             builder.AddValidation(options =>
             {
-                options.AddAudiences("Admin");
+                options.AddAudiences("BlogServer");
                 options.UseLocalServer();
                 options.UseAspNetCore();
             });

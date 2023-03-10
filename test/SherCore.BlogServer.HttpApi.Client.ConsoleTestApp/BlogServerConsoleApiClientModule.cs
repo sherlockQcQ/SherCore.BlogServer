@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using SherCore.BlogServer.Admin;
 using Volo.Abp.Autofac;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Http.Client.IdentityModel;
@@ -10,7 +11,7 @@ namespace SherCore.BlogServer.HttpApi.Client.ConsoleTestApp;
 
 [DependsOn(
     typeof(AbpAutofacModule),
-    typeof(BlogServerHttpApiClientModule),
+    typeof(AdminHttpApiClientModule),
     typeof(AbpHttpClientIdentityModelModule)
     )]
 public class BlogServerConsoleApiClientModule : AbpModule

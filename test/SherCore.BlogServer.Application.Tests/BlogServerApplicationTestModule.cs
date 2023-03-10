@@ -1,12 +1,12 @@
-﻿using Volo.Abp.Modularity;
+﻿using SherCore.BlogServer.Admin;
+using Volo.Abp.Modularity;
 
 namespace SherCore.BlogServer;
 
 [DependsOn(
-    typeof(BlogServerApplicationModule),
+    typeof(AdminApplicationModule),
     typeof(BlogServerDomainTestModule)
     )]
 public class BlogServerApplicationTestModule : AbpModule
 {
-
 }
