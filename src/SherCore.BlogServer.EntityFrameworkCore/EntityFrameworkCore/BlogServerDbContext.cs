@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SherCore.BlogServer.Blogs;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -52,6 +54,8 @@ public class BlogServerDbContext :
 
     #endregion
 
+    public DbSet<Blog> Blogs { get; set; }
+
     public BlogServerDbContext(DbContextOptions<BlogServerDbContext> options)
         : base(options)
     {
@@ -81,5 +85,12 @@ public class BlogServerDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+        builder.Entity<Blog>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Blogs", BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
     }
 }

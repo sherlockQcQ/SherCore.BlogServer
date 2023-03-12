@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SherCore.BlogServer.Blogs
@@ -46,5 +47,26 @@ namespace SherCore.BlogServer.Blogs
         ///  转载链接
         /// </summary>
         public string ReprintUrl { get; set; }
+
+
+        protected Blog() 
+        {
+
+        }
+
+        public Blog(Guid id, string title, string content) 
+        {
+            Id = id;
+            Title = Check.NotNullOrWhiteSpace(title, nameof(title));
+            Content = Check.NotNullOrWhiteSpace(content, nameof(content));
+        }
+
+        public virtual Blog SetDescription() 
+        {
+            Check.NotNullOrEmpty(Content, nameof(Content));
+            Description= Content[..100];
+
+            return this;
+        }
     }
 }
