@@ -1,16 +1,17 @@
-﻿using SherCore.BlogServer.Admin.Blogs;
-using SherCore.BlogServer.Blogs;
+﻿using Microsoft.AspNetCore.Authorization;
 using SherCore.BlogServer.Categorys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.ObjectMapping;
 
 namespace SherCore.BlogServer.Admin.Categorys
 {
+    [Authorize()]
+    [RemoteService(IsEnabled = false)]
     public class CategoryManagementAppService : AdminAppService, ICategoryManagementAppService
     {
         private readonly IRepository<Category, Guid> _categoryRepository;

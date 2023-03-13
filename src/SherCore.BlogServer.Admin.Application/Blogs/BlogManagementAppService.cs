@@ -5,12 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Identity;
 
 namespace SherCore.BlogServer.Admin.Blogs
 {
-    [Authorize]
+    [Authorize()]
+    [RemoteService(IsEnabled = false)]
     public class BlogManagementAppService : AdminAppService, IBlogManagementAppService
     {
         private readonly IBlogRepository _blogRepository;
