@@ -12,11 +12,9 @@ namespace SherCore.BlogServer.Blogs
 {
     public class EfCoreBlogRepository : EfCoreRepository<BlogServerDbContext, Blog, Guid>, IBlogRepository
     {
-
         public EfCoreBlogRepository(IDbContextProvider<BlogServerDbContext> dbContextProvider)
-            :base(dbContextProvider)
+            : base(dbContextProvider)
         {
-           
         }
 
         public override Task<Blog> InsertAsync(Blog entity, bool autoSave = false, CancellationToken cancellationToken = default)
