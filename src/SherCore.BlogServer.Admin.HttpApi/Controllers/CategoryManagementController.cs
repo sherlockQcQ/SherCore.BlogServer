@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SherCore.BlogServer.Admin.Categorys;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -10,9 +11,10 @@ namespace SherCore.BlogServer.Admin.Controllers
     [RemoteService]
     [Area("admin")]
     [Route("api/category/management")]
-    public class CategoryManagementController:AdminController,ICategoryManagementAppService
+    public class CategoryManagementController : AdminController, ICategoryManagementAppService
     {
         private readonly ICategoryManagementAppService _appSerice;
+
         public CategoryManagementController(
             ICategoryManagementAppService appSerice)
         {
@@ -30,6 +32,13 @@ namespace SherCore.BlogServer.Admin.Controllers
         public Task DeleteAsync(Guid id)
         {
             return _appSerice.DeleteAsync(id);
+        }
+
+        [HttpPost]
+        [Route("delete/many")]
+        public Task DeleteManyAsync(List<Guid> ids)
+        {
+            return _appSerice.DeleteManyAsync(ids);
         }
 
         [HttpGet]

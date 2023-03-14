@@ -14,10 +14,10 @@ namespace SherCore.BlogServer.Admin.Categorys
     [RemoteService(IsEnabled = false)]
     public class CategoryManagementAppService : AdminAppService, ICategoryManagementAppService
     {
-        private readonly IRepository<Category, Guid> _categoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public CategoryManagementAppService(
-            IRepository<Category, Guid> categoryRepository)
+            ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
@@ -40,6 +40,11 @@ namespace SherCore.BlogServer.Admin.Categorys
             await _categoryRepository.DeleteAsync(id);
         }
 
+        public async Task DeleteManyAsync(List<Guid> ids)
+        {
+            await _categoryRepository.DeleteManyAsync(ids);
+        }
+
         public async Task<CategoryDto> GetAsync(Guid id)
         {
             var category = await _categoryRepository.FindAsync(id);
@@ -49,8 +54,7 @@ namespace SherCore.BlogServer.Admin.Categorys
 
         public async Task<PagedResultDto<CategoryDto>> GetListAsync(CategoryQueryOption input)
         {
-            var query = await _categoryRepository.GetQueryableAsync();
-
+            var query = await _categoryRepository.BuildFieldQuery();
             var items = query.PageBy(input).ToList();
             var count = query.Count();
 
@@ -63,9 +67,17 @@ namespace SherCore.BlogServer.Admin.Categorys
             };
         }
 
-        public Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto input)
+        public async Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto input)
         {
-            throw new NotImplementedException();
+            var entity = await _categoryRepository.FindAsync(id);
+
+            entity.Sort = input.Sort;
+            entity.IsEnable = input.IsEnable;
+            entity.Name = input.Name;
+
+            await _categoryRepository.UpdateAsync(entity);
+
+            return await GetAsync(id);
         }
     }
 }

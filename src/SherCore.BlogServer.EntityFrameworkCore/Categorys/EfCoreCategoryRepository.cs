@@ -1,6 +1,7 @@
 ﻿using SherCore.BlogServer.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -11,6 +12,12 @@ namespace SherCore.BlogServer.Categorys
         public EfCoreCategoryRepository(IDbContextProvider<BlogServerDbContext> dbContextProvider)
          : base(dbContextProvider)
         {
+        }
+
+        public async Task<IQueryable<Category>> BuildFieldQuery() 
+        {
+            var  query =await GetQueryableAsync();
+            return query;
         }
     }
 }
