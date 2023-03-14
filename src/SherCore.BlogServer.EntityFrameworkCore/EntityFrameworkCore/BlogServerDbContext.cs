@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SherCore.BlogServer.Blogs;
 using SherCore.BlogServer.Categorys;
+using SherCore.BlogServer.Posts;
+using SherCore.BlogServer.Tags;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -59,6 +61,9 @@ public class BlogServerDbContext :
 
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<Category> Categorys { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<PostTag> PostTags { get; set; }
 
     public BlogServerDbContext(DbContextOptions<BlogServerDbContext> options)
         : base(options)
@@ -101,6 +106,39 @@ public class BlogServerDbContext :
             b.ToTable(BlogServerConsts.DbTablePrefix + "Categorys", BlogServerConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
+        });
+
+        builder.Entity<Post>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Posts", BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+
+            b.HasMany(p => p.Tags).WithOne().HasForeignKey(qt => qt.PostId);
+            b.ApplyObjectExtensionMappings();
+        });
+
+        builder.Entity<Tag>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "Tags", BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+
+            b.HasMany<PostTag>().WithOne().HasForeignKey(qt => qt.TagId);
+            b.ApplyObjectExtensionMappings();
+        });
+
+        builder.Entity<PostTag>(b =>
+        {
+            b.ToTable(BlogServerConsts.DbTablePrefix + "PostTags", BlogServerConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+
+            b.Property(x => x.PostId).HasColumnName(nameof(PostTag.PostId));
+            b.Property(x => x.TagId).HasColumnName(nameof(PostTag.TagId));
+
+            b.HasKey(x => new { x.PostId, x.TagId });
+
+            b.ApplyObjectExtensionMappings();
         });
     }
 }
