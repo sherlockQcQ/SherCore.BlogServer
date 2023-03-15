@@ -19,14 +19,22 @@ namespace SherCore.BlogServer.Admin.Posts
             _postRepository = postRepository;
         }
 
-        public Task<PostWithDetailsDto> CreateAsync(CreatePostDto input)
+        public async Task<PostWithDetailsDto> CreateAsync(CreatePostDto input)
         {
-            throw new NotImplementedException();
+            var newPost = new Post(GuidGenerator.Create(), input.Title, input.IsReprint, input.CategoryId)
+            {
+                Content = input.Content,
+                Status= input.Status,
+            };
+
+            await _postRepository.InsertAsync(newPost);
+
+            return ObjectMapper.Map<Post, PostWithDetailsDto>(newPost);
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _postRepository.DeleteAsync(id);
         }
 
         public Task<PostWithDetailsDto> GetAsync(Guid id)
