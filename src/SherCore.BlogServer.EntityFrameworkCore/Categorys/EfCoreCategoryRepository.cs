@@ -14,9 +14,12 @@ namespace SherCore.BlogServer.Categorys
         {
         }
 
-        public async Task<IQueryable<Category>> BuildFieldQuery() 
+        public async Task<IQueryable<Category>> BuildFieldQuery(string name)
         {
-            var  query =await GetQueryableAsync();
+            var query = await GetQueryableAsync();
+
+            query = query.WhereIf(!name.IsNullOrEmpty(), x => x.Name.Contains(name));
+
             return query;
         }
     }

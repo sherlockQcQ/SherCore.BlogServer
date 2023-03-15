@@ -7,6 +7,6 @@ namespace SherCore.BlogServer.Categorys
 {
     public interface ICategoryRepository : IBasicRepository<Category, Guid>
     {
-        Task<IQueryable<Category>> BuildFieldQuery();
+        Task<IQueryable<Category>> BuildFieldQuery(string name);
     }
 }

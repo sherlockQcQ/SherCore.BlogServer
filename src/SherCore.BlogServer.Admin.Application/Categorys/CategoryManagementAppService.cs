@@ -54,7 +54,9 @@ namespace SherCore.BlogServer.Admin.Categorys
 
         public async Task<PagedResultDto<CategoryDto>> GetListAsync(CategoryQueryOption input)
         {
-            var query = await _categoryRepository.BuildFieldQuery();
+            var query = await _categoryRepository
+                    .BuildFieldQuery(input.Name);
+
             var items = query.PageBy(input).ToList();
             var count = query.Count();
 

@@ -29,6 +29,12 @@ namespace SherCore.BlogServer.Admin.Categorys
         /// </summary>
         public int Count { get; set; }
 
+
+        /// <summary>
+        ///  创建时间
+        /// </summary>
+        public DateTime CreationTime { get; set; }
+
         #endregion 扩展字段
     }
 }
