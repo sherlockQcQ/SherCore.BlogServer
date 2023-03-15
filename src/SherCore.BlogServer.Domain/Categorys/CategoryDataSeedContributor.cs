@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
@@ -69,6 +66,14 @@ namespace SherCore.BlogServer.Categorys
                     sort: ++sort
                 ),
                 autoSave: true);
+
+                await _categoryRepository.InsertAsync(new Category(
+                    id: _guidGenerator.Create(),
+                    name: "关于本站",
+                    isEnable: true,
+                    sort: ++sort
+                    ),
+                    autoSave: true);
             }
         }
     }
