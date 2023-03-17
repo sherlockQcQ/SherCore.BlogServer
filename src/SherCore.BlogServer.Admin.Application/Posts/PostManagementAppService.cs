@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SherCore.BlogServer.Posts;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -24,7 +26,7 @@ namespace SherCore.BlogServer.Admin.Posts
             var newPost = new Post(GuidGenerator.Create(), input.Title, input.IsReprint, input.CategoryId)
             {
                 Content = input.Content,
-                Status= input.Status,
+                Status = input.Status,
             };
 
             await _postRepository.InsertAsync(newPost);
@@ -37,14 +39,31 @@ namespace SherCore.BlogServer.Admin.Posts
             await _postRepository.DeleteAsync(id);
         }
 
-        public Task<PostWithDetailsDto> GetAsync(Guid id)
+        public async Task<PostWithDetailsDto> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var post = await _postRepository.FindAsync(id);
+
+            return ObjectMapper.Map<Post, PostWithDetailsDto>(post);
         }
 
-        public Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOption input)
+        public async Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOption input)
         {
-            throw new NotImplementedException();
+            var query = await _postRepository.GetQueryableAsync();
+
+            query = query
+                .WhereIf(!input.Title.IsNullOrEmpty(), x => x.Title.Contains(input.Title))
+                .WhereIf(input.CategoryId.HasValue, x => x.CategoryId == input.CategoryId);
+
+            var count = query.Count();
+            var items = query.PageBy(input).ToList();
+
+            var dtos = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
+
+            return new PagedResultDto<PostWithDetailsDto>
+            {
+                Items = dtos,
+                TotalCount = count
+            };
         }
 
         public Task<PostWithDetailsDto> UpdateAsync(Guid id, UpdatePostDto input)

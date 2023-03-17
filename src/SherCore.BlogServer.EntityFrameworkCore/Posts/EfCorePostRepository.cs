@@ -23,11 +23,6 @@ namespace SherCore.BlogServer.Posts
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
-        public async Task<IQueryable<Post>> GetQueryableByStatusAsync(EnumStatus enumStatus)
-        {
-            return ((await GetDbSetAsync()).Where(t => t.Status == enumStatus));
-        }
-
         public async Task<int> GetPostCountOfCategory(Guid category, CancellationToken cancellationToken = default)
         {
             return await (await GetDbSetAsync()).Where(t => t.CategoryId == category)
@@ -40,19 +35,6 @@ namespace SherCore.BlogServer.Posts
 
             return query.GroupBy(i => i.CategoryId)
                 .ToDictionary(g => g.Key, g => g.Count());
-        }
-
-        public async Task<IQueryable<Post>> BuildFieldQuery(EnumStatus? status, string title,
-            bool? isTop)
-        {
-            var query = await GetQueryableAsync();
-
-            query = query
-                .WhereIf(status.HasValue, x => x.Status == status)
-                .WhereIf(!title.IsNullOrEmpty(), x => x.Title.Contains(title))
-                .WhereIf(isTop.HasValue, x => x.IsTop);
-
-            return query;
         }
     }
 }
