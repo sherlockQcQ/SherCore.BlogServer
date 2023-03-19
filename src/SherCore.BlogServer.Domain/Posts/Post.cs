@@ -21,7 +21,7 @@ namespace SherCore.BlogServer.Posts
         /// <summary>
         /// 发布时间
         /// </summary>
-        public DateTime  PublishDateTime { get; set; }
+        public DateTime PublishDateTime { get; set; }
 
         /// <summary>
         /// 分类
@@ -66,7 +66,7 @@ namespace SherCore.BlogServer.Posts
         /// <summary>
         ///  状态
         /// </summary>
-        public EnumStatus Status { get;set; }
+        public EnumStatus Status { get; set; }
 
         /// <summary>
         ///  标签
@@ -77,12 +77,12 @@ namespace SherCore.BlogServer.Posts
         {
         }
 
-        public Post(Guid id, [NotNull] string title, bool isReprint,Guid categoryId)
+        public Post(Guid id, [NotNull] string title, bool isReprint, Guid categoryId)
         {
             Id = id;
             Title = Check.NotNullOrWhiteSpace(title, nameof(title));
             IsReprint = isReprint;
-            CategoryId= categoryId;
+            CategoryId = categoryId;
 
             Tags = new Collection<PostTag>();
         }
@@ -96,6 +96,14 @@ namespace SherCore.BlogServer.Posts
         public void AddTag(Guid tagId)
         {
             Tags.Add(new PostTag(Id, tagId));
+        }
+
+        public void SetDescription()
+        {
+            if (Content.Length >= 50)
+            {
+                Description = Content[..50];
+            }
         }
     }
 }
