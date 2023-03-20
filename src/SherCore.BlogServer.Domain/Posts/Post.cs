@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -96,6 +97,11 @@ namespace SherCore.BlogServer.Posts
         public void AddTag(Guid tagId)
         {
             Tags.Add(new PostTag(Id, tagId));
+        }
+
+        public void RemoveTag(Guid tagId)
+        {
+            Tags.RemoveAll(t => t.TagId == tagId);
         }
 
         public void SetDescription()

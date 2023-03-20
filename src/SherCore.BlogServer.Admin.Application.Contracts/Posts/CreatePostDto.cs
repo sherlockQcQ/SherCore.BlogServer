@@ -35,7 +35,6 @@ namespace SherCore.BlogServer.Admin.Posts
         /// </summary>
         public string CoverImage { get; set; }
 
-
         /// <summary>
         /// 是否置顶
         /// </summary>
@@ -55,5 +54,10 @@ namespace SherCore.BlogServer.Admin.Posts
         ///  状态
         /// </summary>
         public EnumStatus Status { get; set; }
+
+        /// <summary>
+        ///  标签名称集合
+        /// </summary>
+        public string Tags { get; set; }
     }
 }
