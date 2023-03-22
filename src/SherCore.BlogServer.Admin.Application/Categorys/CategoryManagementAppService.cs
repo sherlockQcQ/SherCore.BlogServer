@@ -80,5 +80,19 @@ namespace SherCore.BlogServer.Admin.Categorys
 
             return await GetAsync(id);
         }
+
+        /// <summary>
+        /// 专栏字段的下拉框数据
+        /// </summary>
+        /// <returns></returns>
+
+        public async Task<List<CategorySelectDto>> GetSelectListAsync() 
+        {
+            var query = await _categoryRepository.GetListAsync();
+
+            var selectList=query.Select(x => new CategorySelectDto() { Key = x.Id, Value = x.Name }).ToList();
+
+            return selectList;
+        }
     }
 }

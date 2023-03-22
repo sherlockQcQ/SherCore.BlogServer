@@ -54,6 +54,13 @@ namespace SherCore.BlogServer.Admin.Controllers
             return _appSerice.GetListAsync(input);
         }
 
+        [HttpGet]
+        [Route("select")]
+        public Task<List<CategorySelectDto>> GetSelectListAsync()
+        {
+            return _appSerice.GetSelectListAsync();
+        }
+
         [HttpPut]
         [HttpPost]
         [Route("{id}")]
