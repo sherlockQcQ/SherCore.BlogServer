@@ -72,7 +72,7 @@ namespace SherCore.BlogServer.Posts
         /// <summary>
         ///  标签
         /// </summary>
-        public Collection<PostTag> Tags { get; set; }
+        public ICollection<PostTag> Tags { get; set; }
 
         protected Post()
         {
