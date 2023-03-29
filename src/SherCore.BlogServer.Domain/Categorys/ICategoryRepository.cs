@@ -5,7 +5,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace SherCore.BlogServer.Categorys
 {
-    public interface ICategoryRepository : IBasicRepository<Category, Guid>
+    public interface ICategoryRepository : IRepository<Category, Guid>
     {
         Task<IQueryable<Category>> BuildFieldQuery(string name);
     }

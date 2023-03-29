@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using SherCore.BlogServer.Categorys;
 using SherCore.BlogServer.Posts;
 using SherCore.BlogServer.Tags;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
+using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SherCore.BlogServer.Admin.Posts
 {
@@ -16,13 +22,19 @@ namespace SherCore.BlogServer.Admin.Posts
     {
         private readonly IPostRepository _postRepository;
         private readonly ITagRepository _tagRepository;
+        private readonly CategoryManager _categoryManager;
+        private readonly IRepository<IdentityUser, Guid> _userRepository;
 
         public PostManagementAppService(
             IPostRepository postRepository,
-            ITagRepository tagRepository)
+            ITagRepository tagRepository,
+            CategoryManager categoryManager,
+            IRepository<IdentityUser, Guid> userRepository)
         {
             _postRepository = postRepository;
             _tagRepository = tagRepository;
+            _categoryManager = categoryManager;
+            _userRepository = userRepository;
         }
 
         public async Task<PostWithDetailsDto> CreateAsync(CreatePostDto input)
@@ -36,8 +48,10 @@ namespace SherCore.BlogServer.Admin.Posts
             if (input.IsTiming)
             {
                 newPost.Status = EnumStatus.Future;
-                // todo ?
-                // 1. 创建定时发布任务 2.通知订阅的用户
+                /*   todo?
+                 *   1.创建发布任务。
+                 *   2.邮件通知订阅。
+                 */
             }
 
             newPost.SetDescription();
@@ -72,6 +86,16 @@ namespace SherCore.BlogServer.Admin.Posts
             var items = query.PageBy(input).ToList();
 
             var dtos = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
+
+            var names = await _categoryManager.LookupNameByIdAsync(dtos.Select(x => x.CategoryId).Distinct().ToArray());
+            var userIds = dtos.Select(x => x.CreatorId).Distinct().ToList();
+            var users = await _userRepository.GetListAsync(x => userIds.Contains(x.Id));// todo？扩展后需要重写
+
+            dtos.ForEach(dto =>
+            {
+                dto.CategoryName = names[dto.CategoryId];
+                dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId).UserName;// todo？扩展后需要重写
+            });
 
             return new PagedResultDto<PostWithDetailsDto>
             {
@@ -119,6 +143,12 @@ namespace SherCore.BlogServer.Admin.Posts
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="newTags"></param>
+        /// <param name="post"></param>
+        /// <returns></returns>
         private async Task RemoveOldTags(ICollection<string> newTags, Post post)
         {
             foreach (var oldTag in post.Tags.ToList())
@@ -150,7 +180,6 @@ namespace SherCore.BlogServer.Admin.Posts
         private async Task SaveTags(ICollection<string> tags, Post post)
         {
             tags = tags
-                .Select(t => t.ToLowerInvariant())
                 .Distinct()
                 .ToList();
 
@@ -158,6 +187,11 @@ namespace SherCore.BlogServer.Admin.Posts
             await AddNewTags(tags, post);
         }
 
+        /// <summary>
+        /// 拆解Tags
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         private static List<string> SplitTags(string tags)
         {
             if (tags.IsNullOrWhiteSpace())
