@@ -30,9 +30,17 @@ namespace SherCore.BlogServer.Admin.Posts
             var newPost = new Post(GuidGenerator.Create(), input.Title, input.IsReprint, input.CategoryId)
             {
                 Content = input.Content,
-                Status = input.Status,
+                PublishDateTime = input.IsTiming ? input.PublishDateTime : DateTime.Now
             };
 
+            if (input.IsTiming)
+            {
+                newPost.Status = EnumStatus.Future;
+                // todo ?
+                // 1. 创建定时发布任务 2.通知订阅的用户
+            }
+
+            newPost.SetDescription();
             var tagList = SplitTags(input.Tags);
             await SaveTags(tagList, newPost);
             await _postRepository.InsertAsync(newPost);
@@ -147,7 +155,6 @@ namespace SherCore.BlogServer.Admin.Posts
                 .ToList();
 
             await RemoveOldTags(tags, post);
-
             await AddNewTags(tags, post);
         }
 

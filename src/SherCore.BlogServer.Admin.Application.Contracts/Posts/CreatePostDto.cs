@@ -6,7 +6,7 @@ namespace SherCore.BlogServer.Admin.Posts
     public class CreatePostDto
     {
         /// <summary>
-        ///  标题
+        /// 标题
         /// </summary>
         public string Title { get; set; }
 
@@ -14,6 +14,11 @@ namespace SherCore.BlogServer.Admin.Posts
         /// 描述
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// 是否开启定时
+        /// </summary>
+        public bool IsTiming { get; set; }
 
         /// <summary>
         /// 发布时间
@@ -51,13 +56,13 @@ namespace SherCore.BlogServer.Admin.Posts
         public string ReprintUrl { get; set; }
 
         /// <summary>
-        ///  状态
-        /// </summary>
-        public EnumStatus Status { get; set; }
-
-        /// <summary>
         ///  标签名称集合
         /// </summary>
         public string Tags { get; set; }
+
+        /// <summary>
+        ///  状态
+        /// </summary>
+        public EnumStatus Status { get; set; }
     }
 }

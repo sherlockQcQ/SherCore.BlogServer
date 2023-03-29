@@ -106,10 +106,7 @@ namespace SherCore.BlogServer.Posts
 
         public void SetDescription()
         {
-            if (Content.Length >= 50)
-            {
-                Description = Content[..50];
-            }
+            Description = Content.Length >= 50 ? Content[..50] : Content;
         }
     }
 }
