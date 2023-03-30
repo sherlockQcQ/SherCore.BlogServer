@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using SherCore.BlogServer.Categorys;
 using SherCore.BlogServer.Posts;
 using SherCore.BlogServer.Tags;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace SherCore.BlogServer.Admin.Posts
 {
@@ -83,7 +80,7 @@ namespace SherCore.BlogServer.Admin.Posts
                 .WhereIf(input.CategoryId.HasValue, x => x.CategoryId == input.CategoryId);
 
             var count = query.Count();
-            var items = query.PageBy(input).ToList();
+            var items = await AsyncExecuter.ToListAsync(query.PageBy(input));
 
             var dtos = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
 
@@ -93,7 +90,8 @@ namespace SherCore.BlogServer.Admin.Posts
 
             dtos.ForEach(dto =>
             {
-                dto.CategoryName = names[dto.CategoryId];
+                //如果删除分类时不删除文章
+                dto.CategoryName = names.TryGetValue(dto.CategoryId, out string value) ? value : "已删除的分类专栏";
                 dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId).UserName;// todo？扩展后需要重写
             });
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,6 @@ namespace SherCore.BlogServer.Categorys
             _categoryRepository = categoryRepository;
         }
 
-
         /// <summary>
         ///  通过IDS集合查找对应分类专栏的名称
         /// </summary>
@@ -24,10 +24,6 @@ namespace SherCore.BlogServer.Categorys
         /// <returns></returns>
         public async Task<Dictionary<Guid, string>> LookupNameByIdAsync(Guid[] ids)
         {
-            if (ids is null)
-            {
-                return null;
-            }
             var query = await _categoryRepository.GetQueryableAsync();
 
             return query.Where(x => ids.Contains(x.Id)).ToDictionary(x => x.Id, x => x.Name);
@@ -38,11 +34,11 @@ namespace SherCore.BlogServer.Categorys
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<string> LookupNameByIdAsync(Guid id)
+        public async Task<string> LookupNameByIdAsync([NotNull] Guid id)
         {
             if (id == Guid.Empty)
             {
-                return null;
+                return null;// 要抛出异常
             }
 
             return (await _categoryRepository.FindAsync(x => x.Id == id)).Name;

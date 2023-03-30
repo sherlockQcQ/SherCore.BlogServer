@@ -2,9 +2,11 @@
 using SherCore.BlogServer.Admin.Blogs;
 using SherCore.BlogServer.Admin.Categorys;
 using SherCore.BlogServer.Admin.Posts;
+using SherCore.BlogServer.Admin.Tags;
 using SherCore.BlogServer.Blogs;
 using SherCore.BlogServer.Categorys;
 using SherCore.BlogServer.Posts;
+using SherCore.BlogServer.Tags;
 
 namespace SherCore.BlogServer.Admin;
 
@@ -20,5 +22,7 @@ public class AdminApplicationAutoMapperProfile : Profile
         CreateMap<Category, CategoryDto>();
 
         CreateMap<Post, PostWithDetailsDto>();
+
+        CreateMap<Tag, TagDto>();
     }
 }
