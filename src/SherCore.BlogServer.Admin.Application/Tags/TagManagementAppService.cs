@@ -31,7 +31,9 @@ namespace SherCore.BlogServer.Admin.Tags
         {
             var query = await _repository.GetQueryableAsync();
 
-            query = query.WhereIf(!input.Name.IsNullOrEmpty(), x => x.Name.Contains(input.Name));
+            query = query
+                .Where(x => x.UsageCount != 0)
+                .WhereIf(!input.Name.IsNullOrEmpty(), x => x.Name.Contains(input.Name));
 
             query.OrderBy(input.Sorting ?? "UsageCount Desc");
 

@@ -65,7 +65,17 @@ namespace SherCore.BlogServer.Admin.Posts
 
         public async Task DeleteAsync(Guid id)
         {
-            await _postRepository.DeleteAsync(id);
+            await _postManager.DeleteAsync(id);
+        }
+
+        public async Task DeleteManyAsync(List<Guid> ids)
+        {
+            if (!ids.Any())
+            {
+                throw new UserFriendlyException("选择的文章未找到！未删除文章！");
+            }
+
+            await _postManager.DeleteManyByIds(ids);
         }
 
         public async Task<PostWithDetailsDto> GetAsync(Guid id)
@@ -79,7 +89,7 @@ namespace SherCore.BlogServer.Admin.Posts
         {
             var query = await _postManager.BuildIQueryable(ObjectMapper.Map<PostQueryOptionDto, PostQueryOption>(input));
 
-            var count = query.Count();
+            var count = await AsyncExecuter.CountAsync(query);
             var items = await AsyncExecuter
                 .ToListAsync(query.PageBy(input).OrderBy(input.Sorting ?? "CreationTime Desc"));
 

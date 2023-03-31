@@ -104,9 +104,17 @@ namespace SherCore.BlogServer.Posts
             Tags.RemoveAll(t => t.TagId == tagId);
         }
 
+        public void RemoveAllTag() 
+        {
+            Tags.RemoveAll(Tags);
+        }
+
         public void SetDescription()
         {
-            Description = Content.Length >= 50 ? Content[..50] : Content;
+            if (Description.IsNullOrEmpty()) 
+            {
+                Description = Content.Length >= 50 ? Content[..50] : Content;
+            }
         }
     }
 }

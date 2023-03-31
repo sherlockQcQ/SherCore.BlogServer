@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
 namespace SherCore.BlogServer.Admin.Posts
@@ -12,5 +12,6 @@ namespace SherCore.BlogServer.Admin.Posts
         CreatePostDto,
         UpdatePostDto>
     {
+        Task DeleteManyAsync(List<Guid> ids);
     }
 }

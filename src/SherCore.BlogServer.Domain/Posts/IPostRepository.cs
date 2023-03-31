@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
@@ -13,5 +15,7 @@ namespace SherCore.BlogServer.Posts
         Task<int> GetPostCountOfCategory(Guid category, CancellationToken cancellationToken = default);
 
         Task<Dictionary<Guid, int>> GetPostCountOfCategory(Guid[] categoryIds);
+
+        Task<Post> GetWithTagAsync(Expression<Func<Post, bool>> predicate, CancellationToken cancellationToken = default);
     }
 }

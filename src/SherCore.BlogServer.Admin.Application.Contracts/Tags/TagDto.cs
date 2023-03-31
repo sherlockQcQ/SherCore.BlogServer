@@ -8,5 +8,14 @@ namespace SherCore.BlogServer.Admin.Tags
         public string Name { get; set; }
 
         public int UsageCount { get; set; }
+
+        public string Label
+        {
+            get
+            {
+                return $"{Name}({UsageCount})";
+            }
+            set { }
+        }
     }
 }

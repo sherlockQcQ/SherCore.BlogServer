@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SherCore.BlogServer.Admin.Posts;
-using SherCore.BlogServer.Admin.Tags;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -32,6 +32,12 @@ namespace SherCore.BlogServer.Admin.Controllers
         public Task DeleteAsync(Guid id)
         {
             return _appService.DeleteAsync(id);
+        }
+
+        [HttpDelete]
+        public Task DeleteManyAsync([FromBody] List<Guid> ids)
+        {
+            return _appService.DeleteManyAsync(ids);
         }
 
         [HttpGet]

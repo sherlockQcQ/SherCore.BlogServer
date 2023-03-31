@@ -1,12 +1,13 @@
 ﻿using SherCore.BlogServer.Posts;
 using System;
+using Volo.Abp.Application.Dtos;
 
 namespace SherCore.BlogServer.Admin.Posts
 {
     /// <summary>
     ///  详情表
     /// </summary>
-    public class PostWithDetailsDto
+    public class PostWithDetailsDto:EntityDto<Guid>
     {
         // <summary>
         ///  标题
