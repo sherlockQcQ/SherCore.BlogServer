@@ -8,7 +8,7 @@ namespace SherCore.BlogServer.Admin.Posts
     public interface IPostManagementAppService : ICrudAppService<
         PostWithDetailsDto,
         Guid,
-        PostQueryOption,
+        PostQueryOptionDto,
         CreatePostDto,
         UpdatePostDto>
     {

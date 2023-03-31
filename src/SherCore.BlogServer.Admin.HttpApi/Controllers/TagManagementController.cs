@@ -10,7 +10,7 @@ namespace SherCore.BlogServer.Admin.Controllers
     [RemoteService]
     [Area("admin")]
     [Route("api/tag/management")]
-    public class TagManagementController : AdminController,ITagManagementAppService
+    public class TagManagementController : AdminController, ITagManagementAppService
     {
         private readonly ITagManagementAppService _appService;
 

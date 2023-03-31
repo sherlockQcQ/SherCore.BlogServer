@@ -56,8 +56,8 @@ namespace SherCore.BlogServer.Admin.Categorys
             var query = await _categoryRepository
                     .BuildFieldQuery(input.Name);
 
-            var items = query.PageBy(input).ToList();
-            var count = query.Count();
+            var items = await AsyncExecuter.ToListAsync(query.PageBy(input));
+            var count = await AsyncExecuter.CountAsync(query);
 
             var dtos = new List<CategoryDto>(ObjectMapper.Map<List<Category>, List<CategoryDto>>(items));
 

@@ -5,6 +5,7 @@ using SherCore.BlogServer.Tags;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -21,17 +22,20 @@ namespace SherCore.BlogServer.Admin.Posts
         private readonly ITagRepository _tagRepository;
         private readonly CategoryManager _categoryManager;
         private readonly IRepository<IdentityUser, Guid> _userRepository;
+        private readonly PostManager _postManager;
 
         public PostManagementAppService(
             IPostRepository postRepository,
             ITagRepository tagRepository,
             CategoryManager categoryManager,
-            IRepository<IdentityUser, Guid> userRepository)
+            IRepository<IdentityUser, Guid> userRepository,
+            PostManager postManager)
         {
             _postRepository = postRepository;
             _tagRepository = tagRepository;
             _categoryManager = categoryManager;
             _userRepository = userRepository;
+            _postManager = postManager;
         }
 
         public async Task<PostWithDetailsDto> CreateAsync(CreatePostDto input)
@@ -52,7 +56,7 @@ namespace SherCore.BlogServer.Admin.Posts
             }
 
             newPost.SetDescription();
-            var tagList = SplitTags(input.Tags);
+            var tagList = input.Tags.SplitByComma();
             await SaveTags(tagList, newPost);
             await _postRepository.InsertAsync(newPost);
 
@@ -71,16 +75,13 @@ namespace SherCore.BlogServer.Admin.Posts
             return ObjectMapper.Map<Post, PostWithDetailsDto>(post);
         }
 
-        public async Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOption input)
+        public async Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOptionDto input)
         {
-            var query = await _postRepository.GetQueryableAsync();
-
-            query = query
-                .WhereIf(!input.Title.IsNullOrEmpty(), x => x.Title.Contains(input.Title))
-                .WhereIf(input.CategoryId.HasValue, x => x.CategoryId == input.CategoryId);
+            var query = await _postManager.BuildIQueryable(ObjectMapper.Map<PostQueryOptionDto, PostQueryOption>(input));
 
             var count = query.Count();
-            var items = await AsyncExecuter.ToListAsync(query.PageBy(input));
+            var items = await AsyncExecuter
+                .ToListAsync(query.PageBy(input).OrderBy(input.Sorting ?? "CreationTime Desc"));
 
             var dtos = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
 
@@ -142,7 +143,7 @@ namespace SherCore.BlogServer.Admin.Posts
         }
 
         /// <summary>
-        ///
+        /// 移除老标签
         /// </summary>
         /// <param name="newTags"></param>
         /// <param name="post"></param>
@@ -183,20 +184,6 @@ namespace SherCore.BlogServer.Admin.Posts
 
             await RemoveOldTags(tags, post);
             await AddNewTags(tags, post);
-        }
-
-        /// <summary>
-        /// 拆解Tags
-        /// </summary>
-        /// <param name="tags"></param>
-        /// <returns></returns>
-        private static List<string> SplitTags(string tags)
-        {
-            if (tags.IsNullOrWhiteSpace())
-            {
-                return new List<string>();
-            }
-            return new List<string>(tags.Split(",").Select(t => t.Trim()));
         }
     }
 }

@@ -42,7 +42,7 @@ namespace SherCore.BlogServer.Admin.Controllers
         }
 
         [HttpGet]
-        public Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOption input)
+        public Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOptionDto input)
         {
             return _appService.GetListAsync(input);
         }

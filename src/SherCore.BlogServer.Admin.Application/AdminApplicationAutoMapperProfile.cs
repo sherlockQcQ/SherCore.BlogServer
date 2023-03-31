@@ -17,11 +17,14 @@ public class AdminApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
-        CreateMap<Blog,BlogDto>();
+        CreateMap<Blog, BlogDto>();
 
         CreateMap<Category, CategoryDto>();
 
         CreateMap<Post, PostWithDetailsDto>();
+        CreateMap<PostQueryOptionDto, PostQueryOption>()
+            .ForMember(dest => dest.Category, src => src.MapFrom(x => x.Category.SplitByComma()))
+            .ForMember(dest => dest.Tag, src => src.MapFrom(x => x.Tag.SplitByComma()));
 
         CreateMap<Tag, TagDto>();
     }
