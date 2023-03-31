@@ -7,6 +7,9 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SherCore.BlogServer.Posts
 {
+    /// <summary>
+    ///  文章
+    /// </summary>
     public class Post : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
@@ -104,14 +107,14 @@ namespace SherCore.BlogServer.Posts
             Tags.RemoveAll(t => t.TagId == tagId);
         }
 
-        public void RemoveAllTag() 
+        public void RemoveAllTag()
         {
             Tags.RemoveAll(Tags);
         }
 
         public void SetDescription()
         {
-            if (Description.IsNullOrEmpty()) 
+            if (Description.IsNullOrEmpty())
             {
                 Description = Content.Length >= 50 ? Content[..50] : Content;
             }

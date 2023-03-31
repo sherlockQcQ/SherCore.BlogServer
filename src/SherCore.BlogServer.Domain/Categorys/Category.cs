@@ -10,6 +10,9 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SherCore.BlogServer.Categorys
 {
+    /// <summary>
+    ///  专栏分类
+    /// </summary>
     public class Category : CreationAuditedEntity<Guid>
     {
         /// <summary>
