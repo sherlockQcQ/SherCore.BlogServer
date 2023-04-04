@@ -43,7 +43,8 @@ namespace SherCore.BlogServer.Admin.Posts
             var newPost = new Post(GuidGenerator.Create(), input.Title, input.IsReprint, input.CategoryId)
             {
                 Content = input.Content,
-                PublishDateTime = input.IsTiming ? input.PublishDateTime : DateTime.Now
+                PublishDateTime = input.IsTiming ? input.PublishDateTime : DateTime.Now,
+                IsTop=input.IsTop,
             };
 
             if (input.IsTiming)
@@ -101,9 +102,9 @@ namespace SherCore.BlogServer.Admin.Posts
 
             dtos.ForEach(dto =>
             {
-                //如果删除分类时不删除文章
+                //如果删除分类时不删除文章// todo？扩展后需要重写
                 dto.CategoryName = names.TryGetValue(dto.CategoryId, out string value) ? value : "已删除的分类专栏";
-                dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId).UserName;// todo？扩展后需要重写
+                dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId).UserName;
             });
 
             return new PagedResultDto<PostWithDetailsDto>

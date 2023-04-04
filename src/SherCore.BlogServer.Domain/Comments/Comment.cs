@@ -5,6 +5,9 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SherCore.BlogServer.Comments
 {
+    /// <summary>
+    ///  评论回复
+    /// </summary>
     public class Comment : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
