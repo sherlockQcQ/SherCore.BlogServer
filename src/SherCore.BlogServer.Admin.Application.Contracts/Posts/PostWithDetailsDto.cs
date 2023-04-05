@@ -76,8 +76,16 @@ namespace SherCore.BlogServer.Admin.Posts
         /// </summary>
         public string StatusValue => Status.GetDisplayName();
 
+        /// <summary>
+        ///  创建人Id
+        /// </summary>
         public Guid CreatorId { get; set; }
+
+        /// <summary>
+        ///  创建人
+        /// </summary>
         public string UserName { get; set; }
+
         /// <summary>
         ///  创建时间
         /// </summary>

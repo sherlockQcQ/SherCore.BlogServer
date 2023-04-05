@@ -81,7 +81,7 @@ namespace SherCore.BlogServer.Admin.Posts
 
         public async Task<PostWithDetailsDto> GetAsync(Guid id)
         {
-            var post = await _postRepository.FindAsync(id);
+            var post = await _postRepository.GetWithTagAsync(x=>x.Id==id);
 
             return ObjectMapper.Map<Post, PostWithDetailsDto>(post);
         }
