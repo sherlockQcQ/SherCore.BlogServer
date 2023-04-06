@@ -33,9 +33,8 @@ namespace SherCore.BlogServer.Admin.Tags
 
             query = query
                 .Where(x => x.UsageCount != 0)
-                .WhereIf(!input.Name.IsNullOrEmpty(), x => x.Name.Contains(input.Name));
-
-            query.OrderBy(input.Sorting ?? "UsageCount Desc");
+                .WhereIf(!input.Name.IsNullOrEmpty(), x => x.Name.Contains(input.Name))
+                .OrderBy(input.Sorting?? "usageCount desc");
 
             var result = await AsyncExecuter
                  .ToListAsync(query.Select(x => ObjectMapper.Map<Tag, TagDto>(x)));

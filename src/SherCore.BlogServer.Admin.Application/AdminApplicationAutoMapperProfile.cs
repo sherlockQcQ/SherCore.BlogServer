@@ -7,6 +7,7 @@ using SherCore.BlogServer.Blogs;
 using SherCore.BlogServer.Categorys;
 using SherCore.BlogServer.Posts;
 using SherCore.BlogServer.Tags;
+using Volo.Abp.AutoMapper;
 
 namespace SherCore.BlogServer.Admin;
 
@@ -21,7 +22,9 @@ public class AdminApplicationAutoMapperProfile : Profile
 
         CreateMap<Category, CategoryDto>();
 
-        CreateMap<Post, PostWithDetailsDto>();
+        CreateMap<Post, PostWithDetailsDto>()
+            .Ignore(x=>x.Tags);
+
         CreateMap<PostQueryOptionDto, PostQueryOption>()
             .ForMember(dest => dest.Category, src => src.MapFrom(x => x.Category.SplitByComma()))
             .ForMember(dest => dest.Tag, src => src.MapFrom(x => x.Tag.SplitByComma()));

@@ -24,6 +24,27 @@ namespace SherCore.BlogServer.Posts
             _tagRepository = tagRepository;
         }
 
+        public async Task<Post> CreateAsync(Post newPost)
+        {
+            newPost.SetDescription();
+
+            await _postRepository.InsertAsync(newPost);
+
+            return newPost;
+        }
+
+        /// <summary>
+        ///  根据PostId查找对应的Tag标签
+        /// </summary>
+        /// <param name="id">PostId</param>
+        /// <returns></returns>
+        public async Task<List<Tag>> GetTagsOfPostAsync(Guid id) 
+        {
+            var tagIds = (await _postRepository.GetAsync(id)).Tags;
+
+            return  await _tagRepository.GetListAsync(tagIds.Select(t => t.TagId));
+        }
+
         /// <summary>
         ///  构造查询IQuery语句
         /// </summary>
@@ -87,6 +108,78 @@ namespace SherCore.BlogServer.Posts
             }
             post.RemoveAllTag();
             await _postRepository.DeleteAsync(id);
+        }
+
+        /// <summary>
+        ///  保存标签
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        public async Task SaveTags(ICollection<string> tags, Post post)
+        {
+            tags = tags
+                .Distinct()
+                .ToList();
+
+            await RemoveOldTags(tags, post);
+            await AddNewTags(tags, post);
+        }
+
+        /// <summary>
+        /// 添加新标签
+        /// </summary>
+        /// <param name="newTags"></param>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        private async Task AddNewTags(IEnumerable<string> newTags, Post post)
+        {
+            var tags = await _tagRepository.GetListAsync();
+
+            foreach (var newTag in newTags)
+            {
+                var tag = tags.FirstOrDefault(t => t.Name == newTag);
+
+                if (tag == null)
+                {
+                    tag = await _tagRepository.InsertAsync(new Tag(GuidGenerator.Create(), newTag, 1));
+                }
+                else
+                {
+                    tag.IncreaseUsageCount();
+                    tag = await _tagRepository.UpdateAsync(tag);
+                }
+
+                post.AddTag(tag.Id);
+            }
+        }
+
+        /// <summary>
+        /// 移除老标签
+        /// </summary>
+        /// <param name="newTags"></param>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        private async Task RemoveOldTags(ICollection<string> newTags, Post post)
+        {
+            foreach (var oldTag in post.Tags.ToList())
+            {
+                var tag = await _tagRepository.GetAsync(oldTag.TagId);
+
+                var oldTagNameInNewTags = newTags.FirstOrDefault(t => t == tag.Name);
+
+                if (oldTagNameInNewTags == null)
+                {
+                    post.RemoveTag(oldTag.TagId);
+
+                    tag.DecreaseUsageCount();
+                    await _tagRepository.UpdateAsync(tag);
+                }
+                else
+                {
+                    newTags.Remove(oldTagNameInNewTags);
+                }
+            }
         }
     }
 }

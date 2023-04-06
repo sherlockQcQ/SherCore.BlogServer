@@ -1,5 +1,7 @@
-﻿using SherCore.BlogServer.Posts;
+﻿using SherCore.BlogServer.Admin.Tags;
+using SherCore.BlogServer.Posts;
 using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace SherCore.BlogServer.Admin.Posts
@@ -68,6 +70,8 @@ namespace SherCore.BlogServer.Admin.Posts
         ///  状态
         /// </summary>
         public EnumStatus Status { get; set; }
+
+        public List<TagDto> Tags { get; set; }=new List<TagDto>();
 
         #region 扩展字段
 

@@ -1,6 +1,9 @@
-﻿using SherCore.BlogServer.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SherCore.BlogServer.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,6 +15,11 @@ namespace SherCore.BlogServer.Tags
         public EfCoreTagRepository(IDbContextProvider<BlogServerDbContext> dbContextProvider)
              : base(dbContextProvider)
         {
+        }
+
+        public async Task<List<Tag>> GetListAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await(await GetDbSetAsync()).Where(t => ids.Contains(t.Id)).ToListAsync(GetCancellationToken(cancellationToken));
         }
 
         /// <summary>
@@ -30,5 +38,6 @@ namespace SherCore.BlogServer.Tags
 
             await UpdateManyAsync(tagList);
         }
+
     }
 }

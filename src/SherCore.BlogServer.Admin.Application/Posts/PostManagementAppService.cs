@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SherCore.BlogServer.Admin.Tags;
 using SherCore.BlogServer.Categorys;
 using SherCore.BlogServer.Posts;
 using SherCore.BlogServer.Tags;
@@ -20,9 +21,9 @@ namespace SherCore.BlogServer.Admin.Posts
     {
         private readonly IPostRepository _postRepository;
         private readonly ITagRepository _tagRepository;
-        private readonly CategoryManager _categoryManager;
         private readonly IRepository<IdentityUser, Guid> _userRepository;
         private readonly PostManager _postManager;
+        private readonly CategoryManager _categoryManager;
 
         public PostManagementAppService(
             IPostRepository postRepository,
@@ -44,7 +45,7 @@ namespace SherCore.BlogServer.Admin.Posts
             {
                 Content = input.Content,
                 PublishDateTime = input.IsTiming ? input.PublishDateTime : DateTime.Now,
-                IsTop=input.IsTop,
+                IsTop = input.IsTop,
             };
 
             if (input.IsTiming)
@@ -58,10 +59,9 @@ namespace SherCore.BlogServer.Admin.Posts
 
             newPost.SetDescription();
             var tagList = input.Tags.SplitByComma();
-            await SaveTags(tagList, newPost);
-            await _postRepository.InsertAsync(newPost);
+            await _postManager.SaveTags(tagList, newPost);
 
-            return ObjectMapper.Map<Post, PostWithDetailsDto>(newPost);
+            return ObjectMapper.Map<Post, PostWithDetailsDto>(await _postManager.CreateAsync(newPost));
         }
 
         public async Task DeleteAsync(Guid id)
@@ -81,9 +81,13 @@ namespace SherCore.BlogServer.Admin.Posts
 
         public async Task<PostWithDetailsDto> GetAsync(Guid id)
         {
-            var post = await _postRepository.GetWithTagAsync(x=>x.Id==id);
+            var post = await _postRepository.GetAsync(id);
 
-            return ObjectMapper.Map<Post, PostWithDetailsDto>(post);
+            var dto = ObjectMapper.Map<Post, PostWithDetailsDto>(post);
+
+            dto.Tags = ObjectMapper.Map<List<Tag>, List<TagDto>>(await _postManager.GetTagsOfPostAsync(id));
+
+            return dto;
         }
 
         public async Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOptionDto input)
@@ -123,78 +127,6 @@ namespace SherCore.BlogServer.Admin.Posts
             await _postRepository.UpdateAsync(entity);
 
             return ObjectMapper.Map<Post, PostWithDetailsDto>(entity);
-        }
-
-        /// <summary>
-        /// 添加新标签
-        /// </summary>
-        /// <param name="newTags"></param>
-        /// <param name="post"></param>
-        /// <returns></returns>
-        private async Task AddNewTags(IEnumerable<string> newTags, Post post)
-        {
-            var tags = await _tagRepository.GetListAsync();
-
-            foreach (var newTag in newTags)
-            {
-                var tag = tags.FirstOrDefault(t => t.Name == newTag);
-
-                if (tag == null)
-                {
-                    tag = await _tagRepository.InsertAsync(new Tag(GuidGenerator.Create(), newTag, 1));
-                }
-                else
-                {
-                    tag.IncreaseUsageCount();
-                    tag = await _tagRepository.UpdateAsync(tag);
-                }
-
-                post.AddTag(tag.Id);
-            }
-        }
-
-        /// <summary>
-        /// 移除老标签
-        /// </summary>
-        /// <param name="newTags"></param>
-        /// <param name="post"></param>
-        /// <returns></returns>
-        private async Task RemoveOldTags(ICollection<string> newTags, Post post)
-        {
-            foreach (var oldTag in post.Tags.ToList())
-            {
-                var tag = await _tagRepository.GetAsync(oldTag.TagId);
-
-                var oldTagNameInNewTags = newTags.FirstOrDefault(t => t == tag.Name);
-
-                if (oldTagNameInNewTags == null)
-                {
-                    post.RemoveTag(oldTag.TagId);
-
-                    tag.DecreaseUsageCount();
-                    await _tagRepository.UpdateAsync(tag);
-                }
-                else
-                {
-                    newTags.Remove(oldTagNameInNewTags);
-                }
-            }
-        }
-
-        /// <summary>
-        ///  保存标签
-        /// </summary>
-        /// <param name="tags"></param>
-        /// <param name="post"></param>
-        /// <returns></returns>
-        private async Task SaveTags(ICollection<string> tags, Post post)
-        {
-            tags = tags
-                .Distinct()
-                .ToList();
-
-            await RemoveOldTags(tags, post);
-            await AddNewTags(tags, post);
         }
     }
 }
