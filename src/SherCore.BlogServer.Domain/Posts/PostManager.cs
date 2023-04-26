@@ -38,11 +38,11 @@ namespace SherCore.BlogServer.Posts
         /// </summary>
         /// <param name="id">PostId</param>
         /// <returns></returns>
-        public async Task<List<Tag>> GetTagsOfPostAsync(Guid id) 
+        public async Task<List<Tag>> GetTagsOfPostAsync(Guid id)
         {
             var tagIds = (await _postRepository.GetAsync(id)).Tags;
 
-            return  await _tagRepository.GetListAsync(tagIds.Select(t => t.TagId));
+            return await _tagRepository.GetListAsync(tagIds.Select(t => t.TagId));
         }
 
         /// <summary>
