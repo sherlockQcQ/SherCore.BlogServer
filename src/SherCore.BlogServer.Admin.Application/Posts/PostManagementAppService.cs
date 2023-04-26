@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using SherCore.BlogServer.Admin.Tags;
-using SherCore.BlogServer.Categorys;
-using SherCore.BlogServer.Posts;
-using SherCore.BlogServer.Tags;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using SherCore.BlogServer.Admin.Tags;
+using SherCore.BlogServer.Categorys;
+using SherCore.BlogServer.Posts;
+using SherCore.BlogServer.Tags;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
@@ -92,28 +92,30 @@ namespace SherCore.BlogServer.Admin.Posts
 
         public async Task<PagedResultDto<PostWithDetailsDto>> GetListAsync(PostQueryOptionDto input)
         {
-            var query = await _postManager.BuildIQueryable(ObjectMapper.Map<PostQueryOptionDto, PostQueryOption>(input));
+            var query = await _postManager.BuildIQueryable(
+                ObjectMapper.Map<PostQueryOptionDto, PostQueryOption>(input));
 
             var count = await AsyncExecuter.CountAsync(query);
             var items = await AsyncExecuter
                 .ToListAsync(query.PageBy(input).OrderBy(input.Sorting ?? "CreationTime Desc"));
 
-            var dtos = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
+            var dtoList = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
 
-            var names = await _categoryManager.LookupNameByIdAsync(dtos.Select(x => x.CategoryId).Distinct().ToArray());
-            var userIds = dtos.Select(x => x.CreatorId).Distinct().ToList();
-            var users = await _userRepository.GetListAsync(x => userIds.Contains(x.Id));// todo？扩展后需要重写
+            var names = await _categoryManager.LookupNameByIdAsync(dtoList.Select(x => x.CategoryId).Distinct()
+                .ToArray());
+            var userIds = dtoList.Select(x => x.CreatorId).Distinct().ToList();
+            var users = await _userRepository.GetListAsync(x => userIds.Contains(x.Id)); // todo？扩展后需要重写
 
-            dtos.ForEach(dto =>
+            dtoList.ForEach(dto =>
             {
                 //如果删除分类时不删除文章// todo？扩展后需要重写
                 dto.CategoryName = names.TryGetValue(dto.CategoryId, out string value) ? value : "已删除的分类专栏";
-                dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId).UserName;
+                dto.UserName = users.FirstOrDefault(x => x.Id == dto.CreatorId)?.UserName;
             });
 
             return new PagedResultDto<PostWithDetailsDto>
             {
-                Items = dtos,
+                Items = dtoList,
                 TotalCount = count
             };
         }

@@ -40,7 +40,7 @@ namespace SherCore.BlogServer.Posts
         /// <returns></returns>
         public async Task<List<Tag>> GetTagsOfPostAsync(Guid id) 
         {
-            var tagIds = (await _postRepository.GetAsync(id)).Tags;
+            var tagIds = (await _postRepository.GetWithTagAsync(x=>x.Id==id)).Tags;
 
             return  await _tagRepository.GetListAsync(tagIds.Select(t => t.TagId));
         }
