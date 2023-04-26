@@ -82,15 +82,16 @@ namespace SherCore.BlogServer.Admin.Categorys
         }
 
         /// <summary>
-        /// 专栏数据
+        /// 获取专栏数据（key -value ）
         /// </summary>
         /// <returns></returns>
 
         public async Task<List<CategorySelectDto>> GetSelectListAsync()
         {
-            var query = await _categoryRepository.GetListAsync();
+            var query = await _categoryRepository.GetQueryableAsync();
 
-            var selectList = query.Select(x => new CategorySelectDto() { Key = x.Id, Value = x.Name }).ToList();
+            var selectList = await AsyncExecuter
+                    .ToListAsync(query.Select(x => new CategorySelectDto() { Key = x.Id, Value = x.Name }));
 
             return selectList;
         }
