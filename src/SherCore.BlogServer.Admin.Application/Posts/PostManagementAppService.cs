@@ -22,18 +22,15 @@ public class PostManagementAppService : AdminAppService, IPostManagementAppServi
     private readonly CategoryManager _categoryManager;
     private readonly PostManager _postManager;
     private readonly IPostRepository _postRepository;
-    private readonly ITagRepository _tagRepository;
     private readonly IRepository<IdentityUser, Guid> _userRepository;
 
     public PostManagementAppService(
         IPostRepository postRepository,
-        ITagRepository tagRepository,
         CategoryManager categoryManager,
         IRepository<IdentityUser, Guid> userRepository,
         PostManager postManager)
     {
         _postRepository = postRepository;
-        _tagRepository = tagRepository;
         _categoryManager = categoryManager;
         _userRepository = userRepository;
         _postManager = postManager;
@@ -101,8 +98,11 @@ public class PostManagementAppService : AdminAppService, IPostManagementAppServi
 
         var dtoList = ObjectMapper.Map<List<Post>, List<PostWithDetailsDto>>(items);
 
-        var names = await _categoryManager.LookupNameByIdAsync(dtoList.Select(x => x.CategoryId).Distinct()
+        var names = await _categoryManager
+            .LookupNameByIdAsync(dtoList.Select(x => x.CategoryId)
+            .Distinct()
             .ToArray());
+        
         var userIds = dtoList.Select(x => x.CreatorId).Distinct().ToList();
         var users = await _userRepository.GetListAsync(x => userIds.Contains(x.Id)); // todo？扩展后需要重写
 
@@ -123,7 +123,6 @@ public class PostManagementAppService : AdminAppService, IPostManagementAppServi
     public async Task<PostWithDetailsDto> UpdateAsync(Guid id, UpdatePostDto input)
     {
         var entity = await _postRepository.FindAsync(id);
-
         ObjectMapper.Map(entity, input);
 
         await _postRepository.UpdateAsync(entity);

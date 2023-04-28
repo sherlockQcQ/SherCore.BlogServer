@@ -5,119 +5,118 @@ using System.Collections.ObjectModel;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace SherCore.BlogServer.Posts
+namespace SherCore.BlogServer.Posts;
+
+/// <summary>
+///  文章
+/// </summary>
+public class Post : FullAuditedAggregateRoot<Guid>
 {
     /// <summary>
-    ///  文章
+    ///  标题
     /// </summary>
-    public class Post : FullAuditedAggregateRoot<Guid>
+    public string Title { get; set; }
+
+    /// <summary>
+    /// 描述
+    /// </summary>
+    public string Description { get; set; }
+
+    /// <summary>
+    /// 发布时间
+    /// </summary>
+    public DateTime PublishDateTime { get; set; }
+
+    /// <summary>
+    /// 分类
+    /// </summary>
+    public Guid CategoryId { get; set; }
+
+    /// <summary>
+    /// 内容
+    /// </summary>
+    public string Content { get; set; }
+
+    /// <summary>
+    /// 封面图片
+    /// </summary>
+    public string CoverImage { get; set; }
+
+    /// <summary>
+    ///  阅读量
+    /// </summary>
+    public int ReadCount { get; set; }
+
+    /// <summary>
+    ///  赞同数
+    /// </summary>
+    public int ApprovalCount { get; set; }
+
+    /// <summary>
+    /// 是否置顶
+    /// </summary>
+    public bool IsTop { get; set; }
+
+    /// <summary>
+    ///  是否转载
+    /// </summary>
+    public bool IsReprint { get; set; }
+
+    /// <summary>
+    ///  转载链接
+    /// </summary>
+    public string ReprintUrl { get; set; }
+
+    /// <summary>
+    ///  状态
+    /// </summary>
+    public EnumStatus Status { get; set; }
+
+    /// <summary>
+    ///  标签
+    /// </summary>
+    public ICollection<PostTag> Tags { get; set; }
+
+    protected Post()
     {
-        /// <summary>
-        ///  标题
-        /// </summary>
-        public string Title { get; set; }
+    }
 
-        /// <summary>
-        /// 描述
-        /// </summary>
-        public string Description { get; set; }
+    public Post(Guid id, [NotNull] string title, bool isReprint, Guid categoryId)
+    {
+        Id = id;
+        Title = Check.NotNullOrWhiteSpace(title, nameof(title));
+        IsReprint = isReprint;
+        CategoryId = categoryId;
 
-        /// <summary>
-        /// 发布时间
-        /// </summary>
-        public DateTime PublishDateTime { get; set; }
+        Tags = new Collection<PostTag>();
+    }
 
-        /// <summary>
-        /// 分类
-        /// </summary>
-        public Guid CategoryId { get; set; }
+    public Post IncreaseReadCount()
+    {
+        ReadCount++;
+        return this;
+    }
 
-        /// <summary>
-        /// 内容
-        /// </summary>
-        public string Content { get; set; }
+    public void AddTag(Guid tagId)
+    {
+        Tags.Add(new PostTag(Id, tagId));
+    }
 
-        /// <summary>
-        /// 封面图片
-        /// </summary>
-        public string CoverImage { get; set; }
+    public void RemoveTag(Guid tagId)
+    {
+        Tags.RemoveAll(t => t.TagId == tagId);
+    }
 
-        /// <summary>
-        ///  阅读量
-        /// </summary>
-        public int ReadCount { get; set; }
+    public void RemoveAllTag()
+    {
+        Tags.RemoveAll(Tags);
+    }
 
-        /// <summary>
-        ///  赞同数
-        /// </summary>
-        public int ApprovalCount { get; set; }
-
-        /// <summary>
-        /// 是否置顶
-        /// </summary>
-        public bool IsTop { get; set; }
-
-        /// <summary>
-        ///  是否转载
-        /// </summary>
-        public bool IsReprint { get; set; }
-
-        /// <summary>
-        ///  转载链接
-        /// </summary>
-        public string ReprintUrl { get; set; }
-
-        /// <summary>
-        ///  状态
-        /// </summary>
-        public EnumStatus Status { get; set; }
-
-        /// <summary>
-        ///  标签
-        /// </summary>
-        public ICollection<PostTag> Tags { get; set; }
-
-        protected Post()
+    public void SetDescription()
+    {
+        if (Description.IsNullOrEmpty())
         {
-        }
-
-        public Post(Guid id, [NotNull] string title, bool isReprint, Guid categoryId)
-        {
-            Id = id;
-            Title = Check.NotNullOrWhiteSpace(title, nameof(title));
-            IsReprint = isReprint;
-            CategoryId = categoryId;
-
-            Tags = new Collection<PostTag>();
-        }
-
-        public Post IncreaseReadCount()
-        {
-            ReadCount++;
-            return this;
-        }
-
-        public void AddTag(Guid tagId)
-        {
-            Tags.Add(new PostTag(Id, tagId));
-        }
-
-        public void RemoveTag(Guid tagId)
-        {
-            Tags.RemoveAll(t => t.TagId == tagId);
-        }
-
-        public void RemoveAllTag()
-        {
-            Tags.RemoveAll(Tags);
-        }
-
-        public void SetDescription()
-        {
-            if (Description.IsNullOrEmpty())
-            {
-                Description = Content.Length >= 50 ? Content[..50] : Content;
-            }
+            Description = Content.Length >= 50 ? Content[..50] : Content;
         }
     }
 }
